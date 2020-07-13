@@ -1,6 +1,6 @@
 ---
 # handlers file for ansible-role-k8s
 - name: restart_kubelet
-  systemd: 
-    name: kubelet 
+  systemd:
+    name: kubelet
     state: restarted

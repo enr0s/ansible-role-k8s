@@ -31,7 +31,7 @@
   changed_when: "'created' in flannel_result.stdout"
   when: kubernetes_pod_network.cni == 'flannel'
 - name: Check if Kubernetes Dashboard UI service already exists
-  shell: kubectl get services --namespace kubernetes-dashboard
+  command: kubectl get services --namespace kubernetes-dashboard
   register: kubernetes_dashboard_service
   when: kubernetes_enable_web_ui | bool
 - name: Enable the Kubernetes Web Dashboard UI (if configured)
