@@ -3,5 +3,5 @@
   hosts: all
   gather_facts: yes
   roles:
-    - { role: enr0s.ansible-role-docker }
+    - { role: enr0s.ansible_role_docker }
     - { role: ansible-role-k8s }
