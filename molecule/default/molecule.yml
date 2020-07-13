@@ -1,0 +1,48 @@
+---
+dependency:
+  name: galaxy
+lint: |
+  yamllint .
+  ansible-lint
+driver:
+  name: docker
+platforms:
+  - name: master
+    image: ${MOLECULE_DISTRO:-enros/docker-ansible-ubuntu2004:latest}
+    command: ${MOLECULE_COMMAND:-/lib/systemd/systemd}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    tmpfs:
+      - /tmp
+      - /run
+    privileged: yes
+    pre_build_image: yes
+    groups:
+      - masters
+  - name: worker
+    image: ${MOLECULE_DISTRO:-enros/docker-ansible-ubuntu2004:latest}
+    command: ${MOLECULE_COMMAND:-/lib/systemd/systemd}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    tmpfs:
+      - /tmp
+      - /run
+    privileged: yes
+    pre_build_image: yes
+    groups:
+      - workers
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_FORCE_COLOR: 'true'
+  options:
+    vvv: True
+  inventory:
+    group_vars:
+      all:
+        run_not_in_container: False
+        kubernetes_kubelet_extra_args: "--fail-swap-on=false"
+        kubernetes_kubeadm_init_extra_opts: "--ignore-preflight-errors all"
+        kubernetes_join_command_extra_opts: "--ignore-preflight-errors all"
+verifier:
+  name: ansible

@@ -1,0 +1,68 @@
+---
+#- name: Pull images
+#  command: >
+#    kubeadm config images pull
+- name: Initialize Kubernetes master with kubeadm init
+  command: >
+    kubeadm init
+    --pod-network-cidr={{ kubernetes_pod_network.cidr }}
+    --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
+    --kubernetes-version {{ kubernetes_version_kubeadm }}
+    --apiserver-cert-extra-sans {{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
+    {{ kubernetes_kubeadm_init_extra_opts }}
+  register: kubeadmin_init
+  when: not kubernetes_init_stat.stat.exists
+- name: Ensure .kube directory exists.
+  file:
+    path: ~/.kube
+    state: directory
+- name: Copy the kubectl admin.conf to ~/.kube/conf.
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: ~/.kube/config
+    owner: "{{ ansible_user | default('root') }}"
+    group: "{{ ansible_user | default('root') }}"
+    mode: '0644'
+    remote_src: true
+- name: Configure Flannel networking
+  command: >
+    kubectl apply -f {{ kubernetes_flannel_manifest_file }}
+  register: flannel_result
+  changed_when: "'created' in flannel_result.stdout"
+  when: kubernetes_pod_network.cni == 'flannel'
+- name: Check if Kubernetes Dashboard UI service already exists
+  shell: kubectl get services --namespace kubernetes-dashboard
+  register: kubernetes_dashboard_service
+  when: kubernetes_enable_web_ui | bool
+- name: Enable the Kubernetes Web Dashboard UI (if configured)
+  command: "kubectl create -f {{ kubernetes_web_ui_manifest_file }}"
+  when:
+    - kubernetes_enable_web_ui | bool
+    - kubernetes_dashboard_service.stderr == 'No resources found in kubernetes-dashboard namespace.'
+- name: Create a Service Account
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: admin-user
+        namespace: kubernetes-dashboard
+  become: false
+- name: Create a ClusterRoleBinding
+  k8s:
+    state: present
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: admin-user
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cluster-admin
+      subjects:
+      - kind: ServiceAccount
+        name: admin-user
+        namespace: kubernetes-dashboard
+  become: false

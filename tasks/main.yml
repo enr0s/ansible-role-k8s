@@ -1,0 +1,55 @@
+---
+# tasks file for ansible-role-k8s
+- name: Ensure dependencies are installed
+  apt:
+    name: "{{ prerequisite_packages }}"
+    state: present
+    update_cache: true
+- name: Add Kubernetes apt key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+- name: Add Kubernetes repository
+  apt_repository:
+    repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+    update_cache: true
+- name: Install Kubernetes packages
+  apt:
+    name: "{{ kubernetes_packages }}"
+    state: present  
+  notify: restart_kubelet
+- name: Add Kubernetes apt preferences file to pin a version
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  with_items: "{{ kubernetes_packages }}"
+- name: Ensure kubelet is started and enabled at boot
+  systemd:
+    name: kubelet
+    state: started
+    enabled: true
+- name: Check if Kubernetes has already been initialized
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: kubernetes_init_stat
+- name: Set up master nodes
+  include_tasks: master.yml
+  when: "'masters' in group_names"
+- name: Get the kubeadm join command from the Kubernetes master
+  command: kubeadm token create --print-join-command
+  changed_when: false
+  when: "'masters' in group_names"
+  register: kubernetes_join_command_result
+- name: Set the kubeadm join command globally
+  set_fact:
+    kubernetes_join_command: >
+      {{ kubernetes_join_command_result.stdout }}
+      {{ kubernetes_join_command_extra_opts }}
+  when: kubernetes_join_command_result.stdout is defined
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  with_items: "{{ groups['workers'] }}"
+- name: Set up worker nodes
+  include_tasks: worker.yml
+  when: "'workers' in group_names"

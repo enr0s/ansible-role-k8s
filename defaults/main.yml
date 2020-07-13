@@ -1,0 +1,26 @@
+---
+# defaults file for ansible-role-k8s
+prerequisite_packages:
+  - apt-transport-https
+  - ca-certificates
+kubernetes_packages:
+  - kubelet
+  - kubeadm
+  - kubectl
+kubernetes_version: "1.18"
+kubernetes_kubelet_extra_args: ""
+kubernetes_kubeadm_init_extra_opts: ""
+kubernetes_join_command_extra_opts: ""
+kubernetes_pod_network:
+  cni: 'flannel'
+  cidr: '10.244.0.0/16'
+  
+kubernetes_allow_pods_on_master: false
+kubernetes_enable_web_ui: true
+kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+
+kubernetes_apiserver_advertise_address: ''
+kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
+kubernetes_ignore_preflight_errors: 'all'
+
+kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
