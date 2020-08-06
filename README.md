@@ -1,38 +1,57 @@
-Role Name
+[![Build Status](https://travis-ci.com/enr0s/ansible-role-docker.svg?branch=master)](https://travis-ci.com/enr0s/ansible-role-docker)
+![.github/workflows/molecule.yml](https://github.com/enr0s/ansible-role-docker/workflows/.github/workflows/molecule.yml/badge.svg)
+[![quality](https://img.shields.io/ansible/quality/49709)](https://galaxy.ansible.com/enr0s/ansible-role-docker)
+![LICENSE](https://img.shields.io/github/license/enr0s/ansible-role-docker)
+
+Ansible Role Docker
 =========
 
-A brief description of the role goes here.
+Install k8s on your Raspberry (64 bit architecture).
 
-Requirements
-------------
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+```
+
+```
+Docker installation options
+```
+docker_apt_release_channel: stable
+docker_apt_repository: "deb [arch={{ ansible_architecture | replace('x86_64','amd64') | replace ('aarch64','arm64') }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+```
+Docker users
+```
+docker_users: ['ubuntu']
+```
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+```
+ansible-galaxy install -r molecule/default/requirements.yml
+```
 
 Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```
+  ---
+  - hosts: all
+    roles:
+      - {role: ansible-role-k8s, run_not_in_container: True }
+```
 
 License
 -------
 
-BSD
+Apache-2.0
+
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+[https://blog.enros.me]
