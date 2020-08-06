@@ -25,8 +25,7 @@
     mode: '0644'
     remote_src: true
 - name: Configure Flannel networking
-  command: >
-    kubectl apply -f {{ kubernetes_flannel_manifest_file }}
+  command: "kubectl apply -f {{ kubernetes_flannel_manifest_file }}"
   register: flannel_result
   changed_when: "'created' in flannel_result.stdout"
   when: kubernetes_pod_network.cni == 'flannel'
@@ -39,6 +38,11 @@
   when:
     - kubernetes_enable_web_ui | bool
     - kubernetes_dashboard_service.stderr == 'No resources found in kubernetes-dashboard namespace.'
+- name: Install python modules
+  pip:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ python3_modules }}"
 - name: Create a Service Account
   k8s:
     state: present
@@ -48,7 +52,6 @@
       metadata:
         name: admin-user
         namespace: kubernetes-dashboard
-  become: false
 - name: Create a ClusterRoleBinding
   k8s:
     state: present
@@ -65,4 +68,3 @@
       - kind: ServiceAccount
         name: admin-user
         namespace: kubernetes-dashboard
-  become: false

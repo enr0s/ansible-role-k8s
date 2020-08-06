@@ -1,2 +1,3 @@
 ---
+- src: enr0s.ansible_role_bootstrap
 - src: enr0s.ansible_role_docker

@@ -2,6 +2,10 @@
 - name: Converge
   hosts: all
   gather_facts: yes
+  become: yes
+  become_user: root
+  become_method: sudo
   roles:
+    - { role: enr0s.ansible_role_bootstrap }
     - { role: enr0s.ansible_role_docker }
     - { role: ansible-role-k8s }

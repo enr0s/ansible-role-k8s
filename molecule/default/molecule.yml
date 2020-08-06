@@ -5,30 +5,22 @@ lint: |
   yamllint .
   ansible-lint
 driver:
-  name: docker
+  name: vagrant
+  provider:
+    name: libvirt
 platforms:
   - name: master
-    image: ${MOLECULE_DISTRO:-enros/docker-ansible-ubuntu2004:latest}
-    command: ${MOLECULE_COMMAND:-/lib/systemd/systemd}
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    tmpfs:
-      - /tmp
-      - /run
-    privileged: yes
-    pre_build_image: yes
+    box: generic/ubuntu2004
+    memory: 1024
+    cpus: 2
+    provision: yes
     groups:
       - masters
   - name: worker
-    image: ${MOLECULE_DISTRO:-enros/docker-ansible-ubuntu2004:latest}
-    command: ${MOLECULE_COMMAND:-/lib/systemd/systemd}
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    tmpfs:
-      - /tmp
-      - /run
-    privileged: yes
-    pre_build_image: yes
+    box: generic/ubuntu2004
+    memory: 1024
+    cpus: 2
+    provision: yes
     groups:
       - workers
 provisioner:
@@ -36,11 +28,13 @@ provisioner:
   env:
     ANSIBLE_FORCE_COLOR: 'true'
   options:
-    vvv: True
+    vvv: false
   inventory:
     group_vars:
       all:
-        run_not_in_container: False
+        ansible_ssh_user: vagrant
+        ansible_ssh_pass: vagrant
+        run_not_in_container: true
         kubernetes_kubelet_extra_args: "--fail-swap-on=false"
         kubernetes_kubeadm_init_extra_opts: "--ignore-preflight-errors all"
         kubernetes_join_command_extra_opts: "--ignore-preflight-errors all"
