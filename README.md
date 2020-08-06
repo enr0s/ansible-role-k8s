@@ -1,9 +1,7 @@
-[![Build Status](https://travis-ci.com/enr0s/ansible-role-docker.svg?branch=master)](https://travis-ci.com/enr0s/ansible-role-docker)
-![.github/workflows/molecule.yml](https://github.com/enr0s/ansible-role-docker/workflows/.github/workflows/molecule.yml/badge.svg)
-[![quality](https://img.shields.io/ansible/quality/49709)](https://galaxy.ansible.com/enr0s/ansible-role-docker)
-![LICENSE](https://img.shields.io/github/license/enr0s/ansible-role-docker)
+[![quality](https://img.shields.io/ansible/quality/49706)](https://galaxy.ansible.com/enr0s/ansible-role-k8s)
+![LICENSE](https://img.shields.io/github/license/enr0s/ansible-role-k8s)
 
-Ansible Role Docker
+Ansible Role K8S
 =========
 
 Install k8s on your Raspberry (64 bit architecture).
@@ -12,18 +10,42 @@ Install k8s on your Raspberry (64 bit architecture).
 Role Variables
 --------------
 
+Kubernetes packages to be installed on the server.
 ```
-
+prerequisite_packages:
+  - apt-transport-https
+  - ca-certificates
+  - python3-pip
+kubernetes_packages:
+  - kubelet
+  - kubeadm
+  - kubectl
+python3_modules:
+  - openshift
+  - kubernetes
 ```
-Docker installation options
+The minor version of Kubernetes to install and extra arguments to pass to kubelet during startup.
 ```
-docker_apt_release_channel: stable
-docker_apt_repository: "deb [arch={{ ansible_architecture | replace('x86_64','amd64') | replace ('aarch64','arm64') }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
-docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+kubernetes_version: "1.18"
+kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
+kubernetes_kubelet_extra_args: ""
+kubernetes_kubeadm_init_extra_opts: ""
+kubernetes_join_command_extra_opts: ""
+kubernetes_allow_pods_on_master: false
+kubernetes_apiserver_advertise_address: ''
+kubernetes_ignore_preflight_errors: 'all'
 ```
-Docker users
+This role currently supports only flannel.
 ```
-docker_users: ['ubuntu']
+kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+kubernetes_pod_network:
+  cni: 'flannel'
+  cidr: '10.244.0.0/16'
+```
+Enable the Kubernetes web dashboard UI 
+```  
+kubernetes_enable_web_ui: true
+kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 ```
 
 Dependencies
