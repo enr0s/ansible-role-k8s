@@ -10,14 +10,14 @@ driver:
     name: libvirt
 platforms:
   - name: master
-    box: generic/ubuntu2004
+    box: enr0s/ubuntu-focal
     memory: 1024
     cpus: 2
     provision: yes
     groups:
       - masters
   - name: worker
-    box: generic/ubuntu2004
+    box: enr0s/ubuntu-focal
     memory: 1024
     cpus: 2
     provision: yes
