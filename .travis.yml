@@ -17,7 +17,7 @@ install:
   - sudo dpkg -i vagrant_"$VAGRANT_VER"_x86_64.deb
   - sudo apt install qemu-kvm qemu-utils libvirt-bin libvirt0 libvirt-dev
   - vagrant plugin install vagrant-libvirt
-  - pip install molecule molecule-vagrant docker python-vagrant paramiko
+  - pip install molecule molecule-vagrant docker python-vagrant paramiko ansible-lint yamllint
   - sudo chmod o+rwx /var/run/libvirt/libvirt-sock
 
 script:
