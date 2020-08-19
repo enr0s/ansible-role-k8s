@@ -16,6 +16,9 @@
   file:
     path: ~/.kube
     state: directory
+    owner: "{{ ansible_user | default('root') }}"
+    group: "{{ ansible_user | default('root') }}"
+    mode: '0755'
 - name: Copy the kubectl admin.conf to ~/.kube/conf.
   copy:
     src: /etc/kubernetes/admin.conf
