@@ -9,7 +9,7 @@ env:
   global:
     - VAGRANT_VER: 2.2.9
   matrix:
-    - MOLECULE_DISTRO_BOX: enros/ubuntu-focal
+    - MOLECULE_DISTRO_BOX: enr0s/ubuntu-focal
 
 install:
   - sudo add-apt-repository universe && sudo apt update
