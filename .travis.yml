@@ -18,7 +18,7 @@ install:
   - sudo apt install qemu-kvm qemu-utils libvirt-bin libvirt0 libvirt-dev
   - vagrant plugin install vagrant-libvirt
   # bug: Use molecule 3.0.6 until #2781 is resolved
-  - pip install molecule=='3.0.6' molecule-vagrant docker python-vagrant paramiko ansible-lint yamllint
+  - pip install molecule=='3.0.6' molecule-vagrant docker python-vagrant paramiko ansible-lint yamllint travis-wait-improved
   - sudo chmod o+rwx /var/run/libvirt/libvirt-sock
 
 script:
@@ -26,7 +26,7 @@ script:
   - molecule --version
   - printf '[defaults]\nroles_path=../' >ansible.cfg
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
-  - travis_wait 30 molecule test
+  - travis-wait-improved --timeout 30m molecule test
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
