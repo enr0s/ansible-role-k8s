@@ -21,11 +21,9 @@ install:
   - sudo chmod o+rwx /var/run/libvirt/libvirt-sock
 
 script:
-  # Check ansible version
   - ansible --version
-  # Check molecule version
   - molecule --version
-  # Basic role syntax check
+  - printf '[defaults]\nroles_path=../' >ansible.cfg
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
   - molecule test
 
