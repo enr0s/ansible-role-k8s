@@ -3,4 +3,4 @@
   shell: >
     {{ kubernetes_join_command }}
   tags:
-    - skip_ansible_lint 
+    - skip_ansible_lint
