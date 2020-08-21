@@ -1,4 +1,4 @@
-- name: join node to Kubernetes master
+- name: join node to kubernetes master
   shell: >
     {{ kubernetes_join_command }}
   tags:
