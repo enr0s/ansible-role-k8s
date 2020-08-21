@@ -53,7 +53,8 @@ Dependencies
 ------------
 
 ```
-ansible-galaxy install -r molecule/default/requirements.yml
+role: enr0s.ansible_role_bootstrap
+role: enr0s.ansible_role_docker
 ```
 
 Example Playbook
@@ -64,7 +65,13 @@ Including an example of how to use your role (for instance, with variables passe
 ```
   ---
   - hosts: all
+    gather_facts: true
+    become: yes
+    become_user: root
+    become_method: sudo
     roles:
+      - { role: enr0s.ansible_role_bootstrap }
+      - { role: enr0s.ansible_role_docker } 
       - { role: ansible-role-k8s }
 ```
 

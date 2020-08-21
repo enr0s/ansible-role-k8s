@@ -1,31 +1,26 @@
----
 dist: bionic
-
 language: python
 python:
-  - 3.6
-
+- 3.6
 env:
   global:
-    - VAGRANT_VER: 2.2.9
+  - VAGRANT_VER: 2.2.9
   matrix:
-    - MOLECULE_DISTRO_BOX: enr0s/ubuntu-focal
-
+  - MOLECULE_DISTRO_BOX: enr0s/ubuntu-focal
 install:
-  - sudo add-apt-repository universe && sudo apt update
-  - wget https://releases.hashicorp.com/vagrant/$VAGRANT_VER/vagrant_"$VAGRANT_VER"_x86_64.deb
-  - sudo dpkg -i vagrant_"$VAGRANT_VER"_x86_64.deb
-  - sudo apt install qemu-kvm qemu-utils libvirt-bin libvirt0 libvirt-dev sshpass
-  - vagrant plugin install vagrant-libvirt
-  # bug: Use molecule 3.0.6 until #2781 is resolved
-  - pip install molecule=='3.0.6' molecule-vagrant docker python-vagrant paramiko ansible-lint yamllint travis-wait-improved
-  - sudo chmod o+rwx /var/run/libvirt/libvirt-sock
-
+- sudo add-apt-repository universe && sudo apt update
+- wget https://releases.hashicorp.com/vagrant/$VAGRANT_VER/vagrant_"$VAGRANT_VER"_x86_64.deb
+- sudo dpkg -i vagrant_"$VAGRANT_VER"_x86_64.deb
+- sudo apt install qemu-kvm qemu-utils libvirt-bin libvirt0 libvirt-dev sshpass
+- vagrant plugin install vagrant-libvirt
+- pip install molecule=='3.0.6' molecule-vagrant docker python-vagrant paramiko ansible-lint yamllint travis-wait-improved
+- sudo chmod o+rwx /var/run/libvirt/libvirt-sock
 script:
-  - ansible --version
-  - molecule --version
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
-  - travis-wait-improved --timeout 30m molecule test
-
+- ansible --version
+- molecule --version
+- printf '[defaults]\nroles_path=../' >ansible.cfg
+- travis-wait-improved --timeout 30m molecule test
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  slack:
+    secure: B9jCj51DA1YZyaXMk/+ml8lrmHRqdXeARbNdaxLv+tOyGRdn6f7SLRj33i05khtJr28/l3S9taylh+6cgawWMx8aU+hhnjUxzESPpu9yVDtfIuvxn8/pa5IuNX92Piztg3wT4cqah7qlZ50vgvo1TEVNF2fw+w7+eEOLSwDbrMGpml/jMVs2Y0EObdZekhC0A3AyYizfEnjOX8P/u6GZScPc9q8T9MerBMWSk7D+c0h4gyfYLe3lcxDAXrQrtDVLPd+tgCvOgbp8nyizlY/QNm1kHb0rRDgjINQ8jI0gU9u/j1wWWT1q4z1kx0u9N7GAT9SXIaPWlp6KJoC6yp+9Fmfqu6iH0w6FrK4scZwWVdPkfpi7zMPgpa4JRd+Gr+HtEtX278apACGOJLAd6r4PAfGZp0NxyRWE9t//+DEBC6kJbxPHtXPwekuODjcHLS6kpqDHsEwJiKykBwgo9zb/3urGdZimS594k8Guugk4eWcUsf5RAj3f01MZxFfp9QXNdm129Kmzwmm84BDi04ErtrD6ty8wR/2ozPOiYxYhNbYcXOyQ1tquNuU+rFP5LEMYc90XOqRqrpBQlreC4PvnM+I2ssIYiH/NSHLFE6gxiHtDP2LTIvNzqel1x1AQNpIvRAt+cNzYV9M+yGN6E8bLbyCmwpLnZdXVnzrhiyzn1Mk=
