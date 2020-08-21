@@ -1,4 +1,6 @@
 ---
-- name: join node to kubernetes master
+- name: Join node to Kubernetes master
   shell: >
     {{ kubernetes_join_command }}
+  tags:
+    - skip_ansible_lint 
