@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/enr0s/ansible-role-k8s.svg?branch=master)](https://travis-ci.com/enr0s/ansible-role-k8s)
 [![quality](https://img.shields.io/ansible/quality/49706)](https://galaxy.ansible.com/enr0s/ansible-role-k8s)
 ![LICENSE](https://img.shields.io/github/license/enr0s/ansible-role-k8s)
 
@@ -64,7 +65,7 @@ Including an example of how to use your role (for instance, with variables passe
   ---
   - hosts: all
     roles:
-      - {role: ansible-role-k8s, run_not_in_container: True }
+      - { role: ansible-role-k8s }
 ```
 
 License
