@@ -57,3 +57,5 @@
 - name: Set up worker nodes
   include_tasks: worker.yml
   when: "'workers' in group_names"
+  tags:
+    - molecule-idempotence-notest
