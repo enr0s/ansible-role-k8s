@@ -19,7 +19,7 @@ script:
 - ansible --version
 - molecule --version
 - printf '[defaults]\nroles_path=../' >ansible.cfg
-- travis-wait-improved --timeout 30m molecule test
+- travis-wait-improved --timeout 45m molecule test
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
   slack:
